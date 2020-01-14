@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#TODO:
+#retrieve all the submitted jobs and info about them, firstly: pending jobs, completed, failed
+sacct | head -n 2 
+sacct | grep PENDING
+
+read -n1 -p "Display COMPLETED jobs? [y,n]" doit 
+case $doit in  
+  y|Y) sacct | grep COMPLETED;; 
+  n|N) echo no ;; 
+  *) echo dont know ;; 
+esac
+
+read -n1 -p "Display FAILED jobs? [y,n]" doit 
+case $doit in  
+  y|Y) sacct | grep FAILED;; 
+  n|N) echo no ;; 
+  *) echo dont know ;; 
+esac
+

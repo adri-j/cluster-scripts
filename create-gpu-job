@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#TODO:
+read -p "Enter job name max 10 chars, e.g. tcmd - test commands (script), [tcmd]" jobname
+jobname=${jobname:-tcmd};
+jobname=$jobname-`date +%T`-`date +%F`;
+
+info="# To run this script use commands:
+# sbatch --partition=gpu `echo $jobname`.sh 
+# sbatch --partition=csgpu `echo $jobname`.sh"; 
+
+
+script="#!/bin/bash
+
+`echo $info`
+
+#SBATCH --job-name=`echo $jobname`
+#SBATCH --nodes=1 
+#SBATCH --gres=gpu:1
+# specify the walltime e.g 20 mins
+#SBATCH -t 00:20:00
+#SBATCH --output=`echo $jobname`.out # output file with an actual output of the job (stdout)
+#SBATCH --error=`echo $jobname`.err  # output file with errors from the job (stderr)
+
+# set to email at start,end and failed jobs
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=adrianna.janik@ucdconnect.ie
+
+# run from current directory
+cd \$SLURM_SUBMIT_DIR
+
+# command to use
+date; # -> REPLACE WITH YOUR COMMAND"
+
+echo "$script" > $jobname.sh;
+echo "Script:" $jobname.sh "was succesffuly saved.";
+echo "$info"; 
